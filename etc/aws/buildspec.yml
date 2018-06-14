@@ -1,0 +1,51 @@
+version: 0.2
+
+#env:
+#  variables:
+#    SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/mirage
+#    SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
+#    SPRING_DATASOURCE_USERNAME: mirage
+#    SPRING_DATASOURCE_PASSWORD: mirage
+#    SVN_URL: https://api.souko.bcos.biglobe.ne.jp/svn/このあたりを直してね！
+#  parameter-store:
+#    SVN_USER: "sokoban.username"
+#    SVN_PASSWORD: "sokoban.password"
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      # Docker Daemonの起動
+#      - nohup /usr/local/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 -s overlay &
+#      - timeout -t 15 sh -c "until docker info; do echo .; sleep 1; done"
+
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+#      - docker-compose -f etc/docker/docker-compose.yml up -d db
+      # mysqlが起動するまでとりあえず5秒待つ（求ム！もう少しスマートな方法）
+#      - sleep 5
+
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - ./gradlew clean build
+#      - ./gradlew --no-daemon clean build
+      - echo Build completed on `date`
+
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+#      - svn co $SVN_URL --username $SVN_USER --password $SVN_PASSWORD --no-auth-cache
+
+artifacts:
+  files:
+#    - build/libs/Mirage-1.0.war
+    - build/test-results/**/*
+    - build/reports/**/*
+  discard-paths: no
+
+cache:
+  paths:
+    - '/root/.gradle/**/*'

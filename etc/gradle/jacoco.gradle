@@ -1,0 +1,3 @@
+// Jacocoタスクの設定
+
+apply plugin: "jacoco"
