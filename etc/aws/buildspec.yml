@@ -1,8 +1,8 @@
 version: 0.2
 
-#env:
-#  variables:
-#    SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/mirage
+env:
+  variables:
+    SONAR_TOKEN: 11ea4cfdf337de33d39af562cc7f02b59663294d
 #    SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
 #    SPRING_DATASOURCE_USERNAME: mirage
 #    SPRING_DATASOURCE_PASSWORD: mirage
@@ -30,8 +30,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
-      - ./gradlew clean build
-#      - ./gradlew --no-daemon clean build
+      - ./gradlew --no-daemon test sonarqube -Dsonar.host.url=http://lb-1413523505.ap-northeast-1.elb.amazonaws.com:9000 -Dsonar.login=$SONAR_TOKEN
       - echo Build completed on `date`
 
   post_build:
@@ -41,7 +40,7 @@ phases:
 
 artifacts:
   files:
-#    - build/libs/Mirage-1.0.war
+    - build/libs/**/*
     - build/test-results/**/*
     - build/reports/**/*
   discard-paths: no

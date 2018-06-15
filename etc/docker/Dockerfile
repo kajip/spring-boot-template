@@ -3,7 +3,7 @@
 #
 FROM openjdk:8-jdk-alpine
 
-LABEL  maintainer "Tomomi Kajita <t-kajita@biglobe.co.jp>"
+LABEL maintainer "Tomomi Kajita <t-kajita@biglobe.co.jp>"
 
 ARG JAR_FILE
 ARG PORT="8080"
