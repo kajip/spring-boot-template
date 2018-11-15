@@ -15,16 +15,12 @@ ext {
 
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
-
     compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
-
-
     compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 
     // DBを使うときはここをコメントアウト
 //    compile "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
 //    runtime "com.h2database:h2:1.4.196"
-
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
 

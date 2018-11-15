@@ -1,0 +1,32 @@
+// Dockerタスクの設定
+jib {
+  from {
+    image = jibSourceImage
+  }
+  to {
+    image = "$jibDestinationImageRepositoryUrl/$project.name:xxxxx"
+  }
+  container {
+    jvmFlags = [
+      '-Xms256M',
+      '-Xmx256M',
+      '-Xss1M'
+    ]
+    ports = [
+        '8080'
+    ]
+    labels = [
+        "maintainer": "Tomomi Kajita <t-kajita@biglobe.co.jp>",
+
+        // Dockerのラベルは、標準化が進んでいるらしいので乗っかる
+        // http://blog.ayakumo.net/entry/2018/02/06/014647
+        // http://label-schema.org/rc1/
+        "org.label-schema.schema-version": "1.0",
+        "org.label-schema.name": project.name,
+        "org.label-schema.version": project.version,
+        "org.label-schema.build-date": buildDate,
+        "org.label-schema.vcs-url": vcsUrl,
+        "org.label-schema.vcs-ref": vcsRef
+    ]
+  }
+}
