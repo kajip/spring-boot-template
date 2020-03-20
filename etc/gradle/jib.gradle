@@ -19,14 +19,13 @@ jib {
         "maintainer": "Tomomi Kajita <t-kajita@biglobe.co.jp>",
 
         // Dockerのラベルは、標準化が進んでいるらしいので乗っかる
-        // http://blog.ayakumo.net/entry/2018/02/06/014647
-        // http://label-schema.org/rc1/
-        "org.label-schema.schema-version": "1.0",
-        "org.label-schema.name": project.name,
-        "org.label-schema.version": project.version,
-        "org.label-schema.build-date": buildDate,
-        "org.label-schema.vcs-url": vcsUrl,
-        "org.label-schema.vcs-ref": vcsRef
+        // https://github.com/opencontainers/image-spec
+        "org.opencontainers.image.created": buildDate,
+        "org.opencontainers.image.authors": "Tomomi Kajita <t-kajita@biglobe.co.jp>",
+        "org.opencontainers.image.title": project.name,
+        "org.opencontainers.image.source": vcsUrl,
+        "org.opencontainers.image.version": project.version,
+        "org.opencontainers.image.revision": vcsRef
     ]
   }
 }
