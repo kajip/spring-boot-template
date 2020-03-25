@@ -11,6 +11,3 @@ apply from: file("${rootProject.rootDir}/etc/gradle/library.gradle")
 
 // Dockerタスクの設定
 apply from: file("${rootProject.rootDir}/etc/gradle/docker.gradle")
-
-// Gradleラッパータスクの設定
-apply from: file("${rootProject.rootDir}/etc/gradle/wrapper.gradle")

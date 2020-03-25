@@ -15,6 +15,7 @@ ext {
 
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
@@ -27,6 +28,7 @@ dependencies {
 
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     testCompile "org.spockframework:spock-core:${spockVersion}"
     testCompile "org.spockframework:spock-spring:${spockVersion}"

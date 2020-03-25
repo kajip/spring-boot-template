@@ -1,3 +1,0 @@
-// Gradle Wrapper 生成タスクの定義
-task wrapper(type: Wrapper) {
-}
