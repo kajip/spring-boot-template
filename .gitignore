@@ -145,4 +145,9 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+.classpath
+.project
+.settings/
+bin/
+
 # End of https://www.gitignore.io/api/java,gradle,intellij,visualstudiocode
