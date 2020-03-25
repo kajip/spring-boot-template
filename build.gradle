@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '1.5.9.RELEASE'
-    id 'com.google.cloud.tools.jib' version '0.10.0'
+    id 'java'
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
 }
 
 group='jp.co.biglobe'
@@ -10,7 +10,4 @@ version='1.0'
 apply from: file("${rootProject.rootDir}/etc/gradle/library.gradle")
 
 // jibタスクの設定
-apply from: file("${rootProject.rootDir}/etc/gradle/jib.gradle")
-
-// Gradleラッパータスクの設定
-apply from: file("${rootProject.rootDir}/etc/gradle/wrapper.gradle")
+// apply from: file("${rootProject.rootDir}/etc/gradle/jib.gradle")
