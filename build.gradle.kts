@@ -35,6 +35,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jdbc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	// Test scope only: the document is generated in tests and production does not serve it.
+	testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -114,10 +116,22 @@ val generateClassDiagram = tasks.register<JavaExec>("generateClassDiagram") {
 	args(sourceSets.main.get().java.classesDirectory.get().asFile.path, classDiagram)
 }
 
+val openApiDocument = "doc/autogen/openapi.json"
+
+val generateOpenApi = tasks.register<Test>("generateOpenApi") {
+	group = "documentation"
+	description = "Generates the OpenAPI document from the running application context."
+	testClassesDirs = sourceSets.test.get().output.classesDirs
+	classpath = sourceSets.test.get().runtimeClasspath
+	filter { includeTestsMatching("*OpenApiDocumentTests.committedDocumentIsUpToDate") }
+	systemProperty("openapi.write", "true")
+	outputs.upToDateWhen { false }
+}
+
 tasks.test {
-	mustRunAfter(generateClassDiagram)
-	// A test compares this file with the compiled classes, so editing it alone must rerun tests.
-	inputs.files(classDiagram)
+	mustRunAfter(generateClassDiagram, generateOpenApi)
+	// Tests compare these files with the code, so editing one alone must rerun them.
+	inputs.files(classDiagram, openApiDocument)
 }
 
 // Tests apply the Flyway migrations to the database that tbls reads.
@@ -143,8 +157,8 @@ val verifySchemaDoc = tasks.register<Exec>("verifySchemaDoc") {
 
 tasks.register("generateDocs") {
 	group = "documentation"
-	description = "Regenerates the class diagram and the schema documents under doc/autogen/."
-	dependsOn(generateClassDiagram, generateSchemaDoc)
+	description = "Regenerates the diagrams, schema documents and OpenAPI document under doc/autogen/."
+	dependsOn(generateClassDiagram, generateOpenApi, generateSchemaDoc)
 }
 
 tasks.check {

@@ -21,6 +21,7 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 │   ├── agent-workflow.md        Agent による開発フロー
 │   ├── autogen/                 生成物（直接編集しない）
 │   │   ├── class-diagram.md     クラス図
+│   │   ├── openapi.json         API 仕様
 │   │   └── schema/              ER 図とテーブル定義
 │   ├── directory-structure.md   この文書
 │   └── parameters.md            環境変数とパラメータの一覧
