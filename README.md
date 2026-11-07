@@ -44,6 +44,26 @@ npx @devcontainers/cli exec --workspace-folder . ./gradlew test
 
 CLI はポート転送を行わないため、起動したアプリへのホストからのアクセスには VS Code を使う。
 
+## パッケージ構成
+
+機能ごとにパッケージを分け、その中に層を置く。ルールは ArchUnit で検査する。
+
+```text
+org.kajip.app
+├── SpringBootTemplateApplication  起動クラスのみをルートに置く
+└── <機能>/
+    ├── web/                       Controller
+    ├── domain/                    ドメインモデル
+    └── persistence/               Repository
+```
+
+- `domain` は `web` と `persistence` に依存しない。
+- `persistence` は `web` に依存しない。
+- 機能の間で依存を循環させない。
+- フィールド注入と標準出力を使わない。
+
+`web` から `persistence` への直接の依存は許す。処理が増えた機能では、層を追加するときに `ArchitectureTests` も合わせて変更する。
+
 ## データベース
 
 Dev Container を開くと、`.devcontainer/compose.yaml` により開発コンテナ（`app`）と PostgreSQL（`db`）が同時に起動する。
@@ -77,6 +97,7 @@ docker volume rm <プロジェクトフォルダ名>_devcontainer_db-data
 | 書式 | Spotless（google-java-format） | `build.gradle.kts` |
 | テスト漏れ | JaCoCo（行カバレッジ 80% 以上） | `build.gradle.kts` |
 | テストの検証漏れ | PIT（ミューテーションスコア 80% 以上） | `build.gradle.kts` |
+| 設計ルール | ArchUnit | `src/test/java/org/kajip/app/ArchitectureTests.java` |
 
 ```sh
 ./gradlew spotlessApply   # 書式を自動修正
@@ -148,6 +169,7 @@ docker run --rm -p 8080:8080 \
 - `build.gradle.kts` の `group`
 - `src/main/resources/application.properties` の `spring.application.name`
 - `src/main/java` と `src/test/java` のパッケージ名および `SpringBootTemplateApplication` のクラス名
+- `build.gradle.kts` の `mainClass` と `pitest` のパッケージ名、`ArchitectureTests` のパッケージ名
 - `.devcontainer/devcontainer.json` の `name`
 - `.github/CODEOWNERS` の所有者
 - `.github/agent-app.env` の GitHub App の ID

@@ -4,6 +4,9 @@
 
 ```mermaid
 classDiagram
+  class SpringBootTemplateApplication {
+    +main(String[]) void
+  }
   class Greeting {
     <<record>>
     -Long id
@@ -11,18 +14,15 @@ classDiagram
     +id() Long
     +message() String
   }
+  class GreetingRepository {
+    <<interface>>
+  }
   class GreetingController {
     -GreetingRepository repository
     ~greetings() List~Greeting~
   }
-  class GreetingRepository {
-    <<interface>>
-  }
   class HelloController {
     ~hello() String
-  }
-  class SpringBootTemplateApplication {
-    +main(String[]) void
   }
   GreetingController --> GreetingRepository : repository
 ```

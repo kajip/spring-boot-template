@@ -1,4 +1,4 @@
-package org.kajip.app;
+package org.kajip.app.hello.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

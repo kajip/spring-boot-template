@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
+import org.kajip.app.greeting.domain.Greeting;
 
 class ClassDiagramGeneratorTests {
 

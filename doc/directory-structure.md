@@ -28,11 +28,11 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 ├── scripts/agent-github-token.sh  Agent 用 GitHub App のトークン発行
 ├── src/
 │   ├── main/
-│   │   ├── java/org/kajip/app/  アプリケーションのコード
+│   │   ├── java/org/kajip/app/  機能別パッケージ（<機能>/web、domain、persistence）
 │   │   └── resources/
 │   │       ├── application.properties
 │   │       └── db/migration/    Flyway のマイグレーション
-│   └── test/java/org/kajip/app/ テストとクラス図の生成器
+│   └── test/java/org/kajip/app/ テスト、設計ルール、クラス図の生成器
 ├── .dockerignore                Docker イメージのビルドから除外するファイル
 ├── .gitattributes               改行コードなどの Git 属性
 ├── .gitignore                   Git の管理から除外するファイル
