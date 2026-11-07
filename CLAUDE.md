@@ -39,7 +39,7 @@ npx -y @devcontainers/cli exec --workspace-folder . ./gradlew <タスク>
 | `spotlessApply` | 書式の自動修正 |
 | `bootRun` | アプリの起動（8080 番） |
 
-`typos` はコンテナ内にのみ導入されるため、`check` もコンテナ内でのみ成功する。
+`typos` はコンテナ内にのみ導入されるため、`check` もコンテナ内でのみ成功する。`Dockerfile` や起動に関わる設定を変えたら、ホストで `scripts/smoke-test.sh` も実行する。
 
 ## このファイルの運用
 

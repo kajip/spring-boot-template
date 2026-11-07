@@ -27,7 +27,9 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 │   ├── directory-structure.md   この文書
 │   └── parameters.md            環境変数とパラメータの一覧
 ├── gradle/wrapper/              Gradle Wrapper の本体と設定
-├── scripts/agent-github-token.sh  Agent 用 GitHub App のトークン発行
+├── scripts/
+│   ├── agent-github-token.sh    Agent 用 GitHub App のトークン発行
+│   └── smoke-test.sh            Docker イメージのスモークテスト
 ├── src/
 │   ├── main/
 │   │   ├── java/org/kajip/app/  機能別パッケージ（<機能>/web、domain、persistence）

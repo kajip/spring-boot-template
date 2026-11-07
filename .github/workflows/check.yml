@@ -18,3 +18,5 @@ jobs:
         run: npx -y @devcontainers/cli@0.90.0 up --workspace-folder .
       - name: Run all checks
         run: npx -y @devcontainers/cli@0.90.0 exec --workspace-folder . ./gradlew --console=plain check
+      - name: Smoke test the Docker image
+        run: scripts/smoke-test.sh
