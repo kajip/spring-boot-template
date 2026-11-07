@@ -5,6 +5,7 @@ plugins {
 	id("org.springframework.boot") version "4.1.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.diffplug.spotless") version "8.11.0"
+	id("info.solidsoft.pitest") version "1.19.0"
 }
 
 group = "org.kajip"
@@ -57,6 +58,17 @@ pmd {
 
 jacoco {
 	toolVersion = "0.8.16"
+}
+
+pitest {
+	pitestVersion = "1.30.2"
+	junit5PluginVersion = "1.2.3"
+	targetClasses = setOf("org.kajip.app.*")
+	excludedClasses = setOf("org.kajip.app.*Application")
+	timestampedReports = false
+	mutationThreshold = 80
+	// PIT starts its own JVMs, so the test task's environment does not reach them.
+	jvmArgs = listOf("-Dspring.datasource.url=jdbc:postgresql://db:5432/app_test")
 }
 
 // The application entry point only delegates to Spring Boot, so it is not worth covering.
@@ -132,5 +144,5 @@ tasks.register("generateDocs") {
 }
 
 tasks.check {
-	dependsOn(tasks.jacocoTestCoverageVerification, typos, verifySchemaDoc)
+	dependsOn(tasks.jacocoTestCoverageVerification, tasks.pitest, typos, verifySchemaDoc)
 }
