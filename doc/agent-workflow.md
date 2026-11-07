@@ -54,3 +54,4 @@ gh pr merge --auto --squash
 - GitHub 側の設定は [GitHub の設定手順](github-setup.md) を参照する。
 - ガードの全体像は [ガードの説明](guards.md) を参照する。
 - 人の認証情報が無い環境は [Agent 実行コンテナの設計](agent-container-design.md) にある。未実装である。
+<!-- probe -->
