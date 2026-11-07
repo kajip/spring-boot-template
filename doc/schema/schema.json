@@ -1,0 +1,77 @@
+{
+  "name": "app_test",
+  "tables": [
+    {
+      "name": "public.greeting",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "message",
+          "type": "text",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "greeting_pkey",
+          "def": "CREATE UNIQUE INDEX greeting_pkey ON public.greeting USING btree (id)",
+          "table": "public.greeting",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "greeting_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.greeting",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "greeting_message_not_null",
+          "type": "n",
+          "def": "NOT NULL message",
+          "table": "public.greeting",
+          "referenced_table": "",
+          "columns": [
+            "message"
+          ]
+        },
+        {
+          "name": "greeting_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.greeting",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    }
+  ],
+  "driver": {
+    "name": "postgres",
+    "database_version": "PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "meta": {
+      "current_schema": "public",
+      "search_paths": [
+        "app",
+        "public"
+      ],
+      "dict": {
+        "Functions": "Stored procedures and functions"
+      }
+    }
+  }
+}

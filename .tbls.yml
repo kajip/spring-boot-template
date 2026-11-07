@@ -1,0 +1,6 @@
+dsn: postgres://app:app@db:5432/app_test?sslmode=disable
+docPath: doc/schema
+er:
+  format: mermaid
+exclude:
+  - flyway_schema_history

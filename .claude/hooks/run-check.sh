@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Stop hook: runs ./gradlew check in the Dev Container when the working tree has
-# uncommitted changes that have not been checked yet. Exit code 2 sends the failure to Claude.
+# Stop hook: regenerates doc/ and runs ./gradlew check in the Dev Container when the working
+# tree has uncommitted changes that have not been checked yet. Exit code 2 sends the failure
+# to Claude.
 set -uo pipefail
 
 readonly MAX_ATTEMPTS=3
@@ -42,7 +43,16 @@ attempts=$(cat "$state_dir/attempts" 2>/dev/null || echo 0)
 npx -y @devcontainers/cli up --workspace-folder . >/dev/null 2>&1 ||
   notify_user "Dev Container を起動できないため check を省略しました。"
 
-if output=$(npx -y @devcontainers/cli exec --workspace-folder . ./gradlew --console=plain check --continue 2>&1); then
+output=$(npx -y @devcontainers/cli exec --workspace-folder . ./gradlew --console=plain generateDocs check --continue 2>&1)
+status=$?
+# Another container is using the shared Gradle cache: not a code failure, so record nothing
+# and let the next stop retry.
+if [ "$status" -ne 0 ] && grep -q 'Timeout waiting to lock' <<<"$output"; then
+  notify_user "Gradle キャッシュが他のコンテナで使用中のため check を完了できませんでした。次回の応答終了時に再実行します。"
+fi
+# generateDocs may have rewritten doc/, so record the state after the run.
+current=$(fingerprint)
+if [ "$status" -eq 0 ]; then
   echo "$current" >"$state_dir/passed"
   rm -f "$state_dir/failed"
   exit 0

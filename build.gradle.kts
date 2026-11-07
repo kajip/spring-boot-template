@@ -26,6 +26,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	runtimeOnly("org.postgresql:postgresql")
+	testImplementation("io.github.classgraph:classgraph:6.0.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jdbc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
@@ -87,6 +88,44 @@ val typos = tasks.register<Exec>("typos") {
 	commandLine("typos")
 }
 
+val classDiagram = "doc/class-diagram.md"
+
+val generateClassDiagram = tasks.register<JavaExec>("generateClassDiagram") {
+	group = "documentation"
+	description = "Generates the class diagram from the compiled main classes."
+	classpath = sourceSets.test.get().runtimeClasspath
+	mainClass = "org.kajip.app.ClassDiagramGenerator"
+	args(sourceSets.main.get().java.classesDirectory.get().asFile.path, classDiagram)
+}
+
+tasks.test {
+	mustRunAfter(generateClassDiagram)
+	// A test compares this file with the compiled classes, so editing it alone must rerun tests.
+	inputs.files(classDiagram)
+}
+
+// Tests apply the Flyway migrations to the database that tbls reads.
+val generateSchemaDoc = tasks.register<Exec>("generateSchemaDoc") {
+	group = "documentation"
+	description = "Generates the ER diagram and table definitions with tbls."
+	dependsOn(tasks.test)
+	commandLine("tbls", "doc", "--rm-dist")
+}
+
+val verifySchemaDoc = tasks.register<Exec>("verifySchemaDoc") {
+	group = "verification"
+	description = "Fails when the generated schema documents differ from the database."
+	dependsOn(tasks.test)
+	mustRunAfter(generateSchemaDoc)
+	commandLine("tbls", "diff")
+}
+
+tasks.register("generateDocs") {
+	group = "documentation"
+	description = "Regenerates the class diagram and the schema documents under doc/."
+	dependsOn(generateClassDiagram, generateSchemaDoc)
+}
+
 tasks.check {
-	dependsOn(tasks.jacocoTestCoverageVerification, typos)
+	dependsOn(tasks.jacocoTestCoverageVerification, typos, verifySchemaDoc)
 }

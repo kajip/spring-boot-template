@@ -6,7 +6,8 @@ Java 25 / Spring Boot 4 / Gradle（Kotlin DSL）/ PostgreSQL のテンプレー�
 
 - ブランチ戦略は GitHub Flow に従う。`main` から作業ブランチを切り、Pull Request 経由で `main` へマージする。
 - コミットメッセージは [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) に従う。
-- 応答の終了時に Stop hook（`.claude/hooks/run-check.sh`）が未検証の変更へ `check` を実行する。失敗を返されたら修正する。
+- 応答の終了時に Stop hook（`.claude/hooks/run-check.sh`）が未検証の変更へ `generateDocs` と `check` を実行する。失敗を返されたら修正する。
+- `doc/` は生成物なので手で編集しない。
 - 検査を通すために閾値の引き下げやルールの無効化をしない。誤検知の抑止は対象を最小限にし、理由をコメントで残す。
 
 ## 実行環境
@@ -28,7 +29,8 @@ npx -y @devcontainers/cli exec --workspace-folder . ./gradlew <タスク>
 
 | タスク | 用途 |
 |---|---|
-| `check` | テストと全静的解析（javac lint、typos、PMD、Spotless、JaCoCo） |
+| `check` | テスト、全静的解析（javac lint、typos、PMD、Spotless、JaCoCo）、`doc/` の鮮度確認 |
+| `generateDocs` | `doc/` のクラス図と ER 図の再生成 |
 | `test` | テストのみ |
 | `spotlessApply` | 書式の自動修正 |
 | `bootRun` | アプリの起動（8080 番） |

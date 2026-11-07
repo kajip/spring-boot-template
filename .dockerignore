@@ -4,6 +4,8 @@
 .gradle/
 build/
 config/
+doc/
+.tbls.yml
 *.md
 .dockerignore
 Dockerfile

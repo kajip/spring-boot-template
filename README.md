@@ -97,6 +97,23 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 - カバレッジ: `http://localhost:8000/jacoco/test/html/`
 - PMD: `http://localhost:8000/pmd/main.html`
 
+## ドキュメントの自動生成
+
+`doc/` のクラス図と ER 図は、コードと DB から生成して Git で管理する。Mermaid 形式の Markdown なので GitHub で描画される。
+
+| 生成物 | 内容 | 生成元 |
+|---|---|---|
+| `doc/class-diagram.md` | クラス図 | コンパイル済みの本番クラス（`ClassDiagramGenerator`） |
+| `doc/schema/` | ER 図とテーブル定義 | `app_test` のスキーマ（[tbls](https://github.com/k1LoW/tbls)、設定は `.tbls.yml`） |
+
+コンテナ内で再生成する。図が古いと `./gradlew check` は失敗する。
+
+```sh
+./gradlew generateDocs
+```
+
+Claude Code の作業では、応答の終了時に Stop hook が未検証の変更に対して `generateDocs` と `check` を自動で実行する。手で編集したときは自動では更新されないため、上のコマンドを実行する。
+
 ## Docker イメージ
 
 ホスト側のターミナルからプロジェクト直下で実行する。ビルドもコンテナ内で行うため、ホストに Java は不要。
@@ -125,4 +142,4 @@ docker run --rm -p 8080:8080 \
 
 ## Gradle キャッシュの共有
 
-`~/.gradle` は volume `spring-boot-gradle-cache` に置かれ、このテンプレートから作った全プロジェクトで共有される。依存の再取得を省ける一方、複数のコンテナで同時にビルドするとキャッシュのロック待ちで失敗する可能性がある。その場合は同時実行を避けるか、`compose.yaml` の volume の `name` をプロジェクト固有に変更する。
+`~/.gradle` は volume `spring-boot-gradle-cache` に置かれ、このテンプレートから作った全プロジェクトで共有される。依存の再取得を省ける一方、複数のコンテナで同時にビルドすると、約 1 分のロック待ちの後に `Timeout waiting to lock` で失敗することがある。その場合は同時実行を避けるか、`compose.yaml` の volume の `name` をプロジェクト固有に変更する。
