@@ -32,7 +32,7 @@ npx -y @devcontainers/cli exec --workspace-folder . ./gradlew <タスク>
 
 | タスク | 用途 |
 |---|---|
-| `check` | テスト、全静的解析（javac lint、typos、PMD、Spotless、JaCoCo）、生成物の鮮度確認 |
+| `check` | テスト、全静的解析（javac lint、typos、PMD、Spotless、JaCoCo、PIT）、生成物の鮮度確認 |
 | `generateDocs` | クラス図と ER 図の再生成 |
 | `test` | テストのみ |
 | `spotlessApply` | 書式の自動修正 |

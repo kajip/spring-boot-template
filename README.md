@@ -76,12 +76,13 @@ docker volume rm <プロジェクトフォルダ名>_devcontainer_db-data
 | コード規約 | PMD | `config/pmd/ruleset.xml` |
 | 書式 | Spotless（google-java-format） | `build.gradle.kts` |
 | テスト漏れ | JaCoCo（行カバレッジ 80% 以上） | `build.gradle.kts` |
+| テストの検証漏れ | PIT（ミューテーションスコア 80% 以上） | `build.gradle.kts` |
 
 ```sh
 ./gradlew spotlessApply   # 書式を自動修正
 ```
 
-カバレッジはプロジェクト全体で判定し、`*Application` クラスは対象外とする。`typos` はコンテナ内にのみ導入されるため、`check` はコンテナ内で実行する。
+カバレッジとミューテーションスコアはプロジェクト全体で判定し、`*Application` クラスは対象外とする。`typos` はコンテナ内にのみ導入されるため、`check` はコンテナ内で実行する。
 
 ### レポートの確認
 
@@ -91,6 +92,7 @@ docker volume rm <プロジェクトフォルダ名>_devcontainer_db-data
 open build/reports/tests/test/index.html        # テスト結果
 open build/reports/jacoco/test/html/index.html  # カバレッジ
 open build/reports/pmd/main.html                # PMD
+open build/reports/pitest/index.html            # PIT
 ```
 
 コンテナ内から確認する場合は、プロジェクト直下（`/workspace`）で JDK 付属の `jwebserver` を起動する。`-d` には絶対パスが必要なため `$PWD` を使う。
@@ -104,6 +106,7 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 - テスト結果: `http://localhost:8000/tests/test/`
 - カバレッジ: `http://localhost:8000/jacoco/test/html/`
 - PMD: `http://localhost:8000/pmd/main.html`
+- PIT: `http://localhost:8000/pitest/`
 
 ## ドキュメントの自動生成
 
