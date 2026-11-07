@@ -147,6 +147,7 @@ docker run --rm -p 8080:8080 \
 - `src/main/java` と `src/test/java` のパッケージ名および `SpringBootTemplateApplication` のクラス名
 - `.devcontainer/devcontainer.json` の `name`
 - `.github/CODEOWNERS` の所有者
+- `.github/agent-app.env` の GitHub App の ID
 - `.devcontainer/devcontainer.json` と `.devcontainer/compose.yaml` の開発用イメージ名 `spring-boot-template-dev`
 
 ## Gradle キャッシュの共有
