@@ -13,6 +13,7 @@ Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev 
 - [Agent による開発フロー](doc/agent-workflow.md)
 - [クラス図](doc/autogen/class-diagram.md)
 - [ER 図とテーブル定義](doc/autogen/schema/README.md)
+- [API 仕様](doc/autogen/openapi.json)
 
 ## 必要なもの
 
@@ -136,6 +137,7 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 | 生成物 | 内容 | 生成元 |
 |---|---|---|
 | `doc/autogen/class-diagram.md` | クラス図 | コンパイル済みの本番クラス（`ClassDiagramGenerator`） |
+| `doc/autogen/openapi.json` | API 仕様（OpenAPI） | テスト実行時のアプリケーション（springdoc）。本番では公開しない |
 | `doc/autogen/schema/` | ER 図とテーブル定義 | `app_test` のスキーマ（[tbls](https://github.com/k1LoW/tbls)、設定は `.tbls.yml`） |
 
 コンテナ内で再生成する。図が古いと `./gradlew check` は失敗する。
