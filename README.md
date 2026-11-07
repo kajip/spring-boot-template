@@ -6,6 +6,13 @@ Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev 
 - PostgreSQL 18 / Spring Data JDBC / Flyway
 - `GET /` が `Hello, World!` を、`GET /greetings` が DB の内容を JSON で返すサンプル付き
 
+## ドキュメント
+
+- [ディレクトリ構造](doc/directory-structure.md)
+- [環境変数とパラメータ](doc/parameters.md)
+- [クラス図](doc/autogen/class-diagram.md)
+- [ER 図とテーブル定義](doc/autogen/schema/README.md)
+
 ## 必要なもの
 
 - Docker（colima 等）
@@ -99,12 +106,12 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 
 ## ドキュメントの自動生成
 
-`doc/` のクラス図と ER 図は、コードと DB から生成して Git で管理する。Mermaid 形式の Markdown なので GitHub で描画される。
+`doc/autogen/` は、コードと DB から生成して Git で管理する。**直接編集してはならない。** 直接編集すると `./gradlew check` が失敗する。Mermaid 形式の Markdown なので GitHub で描画される。
 
 | 生成物 | 内容 | 生成元 |
 |---|---|---|
-| `doc/class-diagram.md` | クラス図 | コンパイル済みの本番クラス（`ClassDiagramGenerator`） |
-| `doc/schema/` | ER 図とテーブル定義 | `app_test` のスキーマ（[tbls](https://github.com/k1LoW/tbls)、設定は `.tbls.yml`） |
+| `doc/autogen/class-diagram.md` | クラス図 | コンパイル済みの本番クラス（`ClassDiagramGenerator`） |
+| `doc/autogen/schema/` | ER 図とテーブル定義 | `app_test` のスキーマ（[tbls](https://github.com/k1LoW/tbls)、設定は `.tbls.yml`） |
 
 コンテナ内で再生成する。図が古いと `./gradlew check` は失敗する。
 
@@ -127,7 +134,7 @@ docker run --rm -p 8080:8080 \
   spring-boot-template
 ```
 
-接続情報は必須で、指定しないと起動に失敗する。イメージのビルドではテストと静的解析を実行しないため、事前に `./gradlew check` を通しておく。
+接続情報は必須で、指定しないと起動に失敗する（[環境変数の一覧](doc/parameters.md)）。イメージのビルドではテストと静的解析を実行しないため、事前に `./gradlew check` を通しておく。
 
 ## テンプレートから新規プロジェクトを作るとき
 

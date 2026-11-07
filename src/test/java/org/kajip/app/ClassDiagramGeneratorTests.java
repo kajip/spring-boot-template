@@ -67,8 +67,8 @@ class ClassDiagramGeneratorTests {
 
   @Test
   void committedDiagramIsUpToDate() throws IOException, URISyntaxException {
-    assertThat(Files.readString(Path.of("doc/class-diagram.md")))
-        .as("doc/class-diagram.md is stale; run ./gradlew generateDocs")
+    assertThat(Files.readString(Path.of("doc/autogen/class-diagram.md")))
+        .as("doc/autogen/class-diagram.md is stale; run ./gradlew generateDocs")
         .isEqualTo(ClassDiagramGenerator.render(mainClassesDir()));
   }
 }

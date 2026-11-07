@@ -1,5 +1,5 @@
 dsn: postgres://app:app@db:5432/app_test?sslmode=disable
-docPath: doc/schema
+docPath: doc/autogen/schema
 er:
   format: mermaid
 exclude:

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stop hook: regenerates doc/ and runs ./gradlew check in the Dev Container when the working
+# Stop hook: regenerates doc/autogen/ and runs ./gradlew check in the Dev Container when the working
 # tree has uncommitted changes that have not been checked yet. Exit code 2 sends the failure
 # to Claude.
 set -uo pipefail
@@ -50,7 +50,7 @@ status=$?
 if [ "$status" -ne 0 ] && grep -q 'Timeout waiting to lock' <<<"$output"; then
   notify_user "Gradle キャッシュが他のコンテナで使用中のため check を完了できませんでした。次回の応答終了時に再実行します。"
 fi
-# generateDocs may have rewritten doc/, so record the state after the run.
+# generateDocs may have rewritten doc/autogen/, so record the state after the run.
 current=$(fingerprint)
 if [ "$status" -eq 0 ]; then
   echo "$current" >"$state_dir/passed"

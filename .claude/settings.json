@@ -1,4 +1,9 @@
 {
+  "permissions": {
+    "deny": [
+      "Edit(/doc/autogen/**)"
+    ]
+  },
   "hooks": {
     "Stop": [
       {

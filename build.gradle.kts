@@ -88,7 +88,7 @@ val typos = tasks.register<Exec>("typos") {
 	commandLine("typos")
 }
 
-val classDiagram = "doc/class-diagram.md"
+val classDiagram = "doc/autogen/class-diagram.md"
 
 val generateClassDiagram = tasks.register<JavaExec>("generateClassDiagram") {
 	group = "documentation"
@@ -117,12 +117,17 @@ val verifySchemaDoc = tasks.register<Exec>("verifySchemaDoc") {
 	description = "Fails when the generated schema documents differ from the database."
 	dependsOn(tasks.test)
 	mustRunAfter(generateSchemaDoc)
-	commandLine("tbls", "diff")
+	// tbls diff only compares the Markdown documents, so check schema.json separately.
+	commandLine(
+		"sh", "-c",
+		"tbls diff && tbls out -t json -o build/tmp/schema.json " +
+			"&& cmp build/tmp/schema.json doc/autogen/schema/schema.json"
+	)
 }
 
 tasks.register("generateDocs") {
 	group = "documentation"
-	description = "Regenerates the class diagram and the schema documents under doc/."
+	description = "Regenerates the class diagram and the schema documents under doc/autogen/."
 	dependsOn(generateClassDiagram, generateSchemaDoc)
 }
 
