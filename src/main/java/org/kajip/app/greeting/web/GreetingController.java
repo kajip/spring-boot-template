@@ -1,6 +1,8 @@
-package org.kajip.app;
+package org.kajip.app.greeting.web;
 
 import java.util.List;
+import org.kajip.app.greeting.domain.Greeting;
+import org.kajip.app.greeting.persistence.GreetingRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

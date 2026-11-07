@@ -27,6 +27,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	runtimeOnly("org.postgresql:postgresql")
+	testImplementation("com.tngtech.archunit:archunit-junit5:1.5.1") {
+		// Its JUnit 1.x dependency otherwise pulls the launcher below the version Spring Boot uses.
+		exclude(group = "org.junit.platform")
+	}
 	testImplementation("io.github.classgraph:classgraph:6.0.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jdbc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
