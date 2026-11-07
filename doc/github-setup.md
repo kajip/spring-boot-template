@@ -123,6 +123,12 @@ gh api --silent -X PATCH repos/{owner}/{repo} -F delete_branch_on_merge=true
 gh api --silent -X PUT repos/{owner}/{repo}/vulnerability-alerts
 ```
 
+シークレットスキャンと push 保護も有効にする。契約プランによっては非公開リポジトリで使えない場合がある。
+
+```sh
+echo '{"security_and_analysis":{"secret_scanning":{"status":"enabled"},"secret_scanning_push_protection":{"status":"enabled"}}}' | gh api --silent -X PATCH repos/{owner}/{repo} --input -
+```
+
 ## 6. `main` の保護を設定する
 
 ```sh
@@ -163,5 +169,4 @@ gh pr close <番号> --delete-branch
 
 ## 任意の設定
 
-- **シークレットスキャン：** リポジトリの設定でシークレットスキャンと push 保護を有効にする。本リポジトリでは未設定で、効果を確認していない。
 - **Template repository：** さらに複製元として使う場合は、リポジトリの設定で有効にする。
