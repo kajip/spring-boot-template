@@ -19,16 +19,27 @@ Agent はすべての変更を Pull Request にし、自動マージを指定す
 
 ```sh
 git switch -c <type>/<topic> main
+
 # 実装してコミットする
-git push -u origin HEAD
+git -c user.name='claude-code-coding-agent[bot]' \
+  -c user.email='353756006+claude-code-coding-agent[bot]@users.noreply.github.com' \
+  commit
+
+# GitHub への操作は App の名義で行う。トークンは 1 時間で失効する
+export GH_TOKEN=$(scripts/agent-github-token.sh)
+git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push -u origin HEAD
 gh pr create --fill
 gh pr merge --auto --squash
 ```
 
+トークンと秘密鍵は表示しない。秘密鍵はリポジトリの外（`~/.config/claude-code-coding-agent/key.pem`）に置く。
+
+同じ環境に人の認証情報があると、Agent は人の名義でも操作できる。無人で動かすときは、人の認証情報が無い環境で実行する。
+
 ## 初回に人が行う設定
 
 1. GitHub にリポジトリを作成し、`main` を push する。`main` への直接の push は `.claude/settings.json` で Claude に禁じているため、人が実行する。
-2. Agent 専用のアカウントまたは GitHub App を用意し、書き込み権限のみを与える。作者は自分の Pull Request を承認できないため、人のアカウントと分ける。管理者権限は与えない。
+2. Agent 専用の GitHub App を作り、対象のリポジトリにのみインストールする。作者は自分の Pull Request を承認できないため、人のアカウントと分ける。権限は Contents と Pull requests の Read and write、Checks と Commit statuses の Read-only のみとし、Administration と Workflows は与えない。
 3. リポジトリの設定で `Allow auto-merge` を有効にする。
 4. `main` に次の保護を設定する。
    - Pull Request を必須にする（承認数は 0、Code Owner のレビューを必須）
