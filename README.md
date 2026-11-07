@@ -161,6 +161,10 @@ docker run --rm -p 8080:8080 \
   spring-boot-template
 ```
 
+死活監視には `GET /actuator/health` を使う。DB に接続できないと `UP` にならない。Actuator で公開するのは `health` のみとする。
+
+ホストで `scripts/smoke-test.sh` を実行すると、イメージをビルドして PostgreSQL と起動し、応答を確認して後片付けまでを行う。CI でも実行する。
+
 接続情報は必須で、指定しないと起動に失敗する（[環境変数の一覧](doc/parameters.md)）。イメージのビルドではテストと静的解析を実行しないため、事前に `./gradlew check` を通しておく。
 
 ## 依存関係の更新
