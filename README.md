@@ -161,6 +161,10 @@ docker run --rm -p 8080:8080 \
 
 接続情報は必須で、指定しないと起動に失敗する（[環境変数の一覧](doc/parameters.md)）。イメージのビルドではテストと静的解析を実行しないため、事前に `./gradlew check` を通しておく。
 
+## 依存関係の更新
+
+Dependabot が Gradle、GitHub Actions、Docker イメージの更新を毎週確認し、Pull Request を作る。`build.gradle.kts` などを変更するため、マージには人のレビューが必要となる。`.devcontainer/Dockerfile` の typos と tbls、`build.gradle.kts` の PMD、PIT、JaCoCo などのツールの版は対象外で、手で更新する。
+
 ## テンプレートから新規プロジェクトを作るとき
 
 以下を新しいプロジェクト名に置き換える。

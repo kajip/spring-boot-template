@@ -15,6 +15,7 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 ├── .github/                     GitHub の設定
 │   ├── CODEOWNERS               人のレビューが必要なパス
 │   ├── agent-app.env            Agent 用 GitHub App の ID（秘密ではない）
+│   ├── dependabot.yml           依存関係の更新の設定
 │   └── workflows/check.yml      CI（Dev Container で check を実行）
 ├── config/pmd/ruleset.xml       PMD のルール
 ├── doc/                         ドキュメント
