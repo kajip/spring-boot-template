@@ -14,6 +14,7 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 │   └── init-test-db.sql         テスト用データベース app_test の作成
 ├── .github/                     GitHub の設定
 │   ├── CODEOWNERS               人のレビューが必要なパス
+│   ├── agent-app.env            Agent 用 GitHub App の ID（秘密ではない）
 │   └── workflows/check.yml      CI（Dev Container で check を実行）
 ├── config/pmd/ruleset.xml       PMD のルール
 ├── doc/                         ドキュメント
@@ -24,6 +25,7 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 │   ├── directory-structure.md   この文書
 │   └── parameters.md            環境変数とパラメータの一覧
 ├── gradle/wrapper/              Gradle Wrapper の本体と設定
+├── scripts/agent-github-token.sh  Agent 用 GitHub App のトークン発行
 ├── src/
 │   ├── main/
 │   │   ├── java/org/kajip/app/  アプリケーションのコード

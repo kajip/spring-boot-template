@@ -48,3 +48,5 @@
 | 環境変数 | 説明 |
 |---|---|
 | `CLAUDE_PROJECT_DIR` | プロジェクトのルート。Claude Code が設定し、Stop hook が参照する |
+| `AGENT_APP_KEY` | GitHub App の秘密鍵のパス。既定値は `~/.config/claude-code-coding-agent/key.pem` |
+| `GH_TOKEN` | `scripts/agent-github-token.sh` で発行した App のトークン。`gh` と `git push` が参照する |

@@ -6,6 +6,7 @@ Java 25 / Spring Boot 4 / Gradle（Kotlin DSL）/ PostgreSQL のテンプレー�
 
 - ブランチ戦略は GitHub Flow に従う。`main` から作業ブランチを切り、Pull Request 経由で `main` へマージする。
 - Pull Request を作ったら `gh pr merge --auto --squash` を指定する。無人か人のレビューかは CODEOWNERS と `main` の保護が決めるので、自分で判断や迂回をしない（詳細は `doc/agent-workflow.md`）。
+- GitHub への push と Pull Request の操作は、人のアカウントではなく GitHub App の名義で行う（手順は `doc/agent-workflow.md`）。トークンと秘密鍵を表示しない。
 - コミットメッセージは [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) に従う。
 - 応答の終了時に Stop hook（`.claude/hooks/run-check.sh`）が未検証の変更へ `generateDocs` と `check` を実行する。失敗を返されたら修正する。
 - `doc/autogen/` は生成物なので直接編集しない。編集ツールは `.claude/settings.json` で拒否され、シェルからの書き換えも禁止する。更新は `generateDocs` で行う。
