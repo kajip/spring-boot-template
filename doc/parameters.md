@@ -31,7 +31,8 @@
 
 | 設定場所 | パラメータ | 値 | 説明 |
 |---|---|---|---|
-| `build.gradle.kts` の `test` タスク | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://db:5432/app_test` | テストの接続先。ユーザーとパスワードは開発環境の値を使う |
+| `build.gradle.kts` の `Test` タスク | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://db:5432/app_test` | テストの接続先。ユーザーとパスワードは開発環境の値を使う |
+| `build.gradle.kts` の `pitest` | `-Dspring.datasource.url` | `jdbc:postgresql://db:5432/app_test` | PIT の子プロセスの接続先 |
 | `.tbls.yml` | `dsn` | `postgres://app:app@db:5432/app_test?sslmode=disable` | ER 図の生成元 |
 
 ## イメージのビルド
@@ -43,10 +44,12 @@
 | `TYPOS_VERSION` | `1.52.0` | typos のバージョン |
 | `TBLS_VERSION` | `1.96.1` | tbls のバージョン |
 
-## Claude Code
+## Agent
 
 | 環境変数 | 説明 |
 |---|---|
 | `CLAUDE_PROJECT_DIR` | プロジェクトのルート。Claude Code が設定し、Stop hook が参照する |
+| `AGENT_APP_ID` | GitHub App の ID。`.github/agent-app.env` で定義する |
+| `AGENT_APP_INSTALLATION_ID` | GitHub App の Installation ID。`.github/agent-app.env` で定義する |
 | `AGENT_APP_KEY` | GitHub App の秘密鍵のパス。既定値は `~/.config/claude-code-coding-agent/key.pem` |
-| `GH_TOKEN` | `scripts/agent-github-token.sh` で発行した App のトークン。`gh` と `git push` が参照する |
+| `GH_TOKEN` | `scripts/agent-github-token.sh` で発行した App のトークン。`gh` が参照する。`git push` では `gh auth git-credential` を指定したときのみ使われ、指定しないと人の認証情報で push し得る |

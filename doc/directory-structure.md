@@ -6,7 +6,7 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 .
 ├── .claude/                     Claude Code の設定
 │   ├── hooks/run-check.sh       応答終了時に generateDocs と check を実行する Stop hook
-│   └── settings.json            hook の登録
+│   └── settings.json            hook の登録と操作の拒否
 ├── .devcontainer/               開発環境
 │   ├── Dockerfile               開発用イメージ（JDK、typos、tbls）
 │   ├── compose.yaml             開発コンテナ（app）と PostgreSQL（db）の定義
@@ -16,15 +16,19 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 │   ├── CODEOWNERS               人のレビューが必要なパス
 │   ├── agent-app.env            Agent 用 GitHub App の ID（秘密ではない）
 │   ├── dependabot.yml           依存関係の更新の設定
-│   └── workflows/check.yml      CI（Dev Container で check を実行）
+│   ├── rulesets/main.json       main の保護ルールの定義（適用は手動）
+│   └── workflows/check.yml      CI（check とスモークテストを実行）
 ├── config/pmd/ruleset.xml       PMD のルール
 ├── doc/                         ドキュメント
+│   ├── agent-container-design.md Agent 実行コンテナの設計（未実装）
 │   ├── agent-workflow.md        Agent による開発フロー
 │   ├── autogen/                 生成物（直接編集しない）
 │   │   ├── class-diagram.md     クラス図
 │   │   ├── openapi.json         API 仕様
 │   │   └── schema/              ER 図とテーブル定義
 │   ├── directory-structure.md   この文書
+│   ├── github-setup.md          複製時の GitHub の設定手順
+│   ├── guards.md                ガードの説明
 │   └── parameters.md            環境変数とパラメータの一覧
 ├── gradle/wrapper/              Gradle Wrapper の本体と設定
 ├── scripts/

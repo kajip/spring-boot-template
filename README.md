@@ -1,6 +1,8 @@
 # spring-boot-template
 
-Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev Container 上で実行するため、ローカルに Java は不要。
+Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev Container（開発環境を収めたコンテナ）上で実行するため、ローカルに Java は不要。
+
+Claude Code（文書中の Agent）に Pull Request を作らせ、変更箇所に応じて無人マージと人のレビューを振り分ける構成も備える。
 
 - Java 25 / Spring Boot 4.1.2 / Gradle Wrapper（Kotlin DSL）
 - PostgreSQL 18 / Spring Data JDBC / Flyway
@@ -8,17 +10,40 @@ Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev 
 
 ## ドキュメント
 
+読む順序の目安は次のとおり。
+
+| 目的 | 読むもの |
+|---|---|
+| このリポジトリで開発する | この README |
+| テンプレートから複製する | [GitHub の設定手順](doc/github-setup.md) |
+| Agent を動かす | [Agent による開発フロー](doc/agent-workflow.md)、[ガードの説明](doc/guards.md) |
+
+文書の一覧は次のとおり。
+
 - [ディレクトリ構造](doc/directory-structure.md)
 - [環境変数とパラメータ](doc/parameters.md)
 - [Agent による開発フロー](doc/agent-workflow.md)
+- [ガードの説明](doc/guards.md)
+- [GitHub の設定手順](doc/github-setup.md)（このテンプレートから複製したときに実施する）
+- [Agent 実行コンテナの設計](doc/agent-container-design.md)（未実装）
 - [クラス図](doc/autogen/class-diagram.md)
 - [ER 図とテーブル定義](doc/autogen/schema/README.md)
 - [API 仕様](doc/autogen/openapi.json)
 
 ## 必要なもの
 
-- Docker（colima 等）
-- VS Code と Dev Containers 拡張、または [Dev Container CLI](https://github.com/devcontainers/cli)
+開発に必要なもの：
+
+- Docker（colima 等。colima なら `colima start` で起動しておく）と BuildKit（`docker buildx version` で確認）
+- VS Code と Dev Containers 拡張、または Node.js（[Dev Container CLI](https://github.com/devcontainers/cli) を `npx` で使う）
+
+Agent を動かす、または GitHub の設定を行う場合に追加で必要なもの：
+
+- ログイン済みの `gh`（`gh auth status` で確認）
+- `jq`、`openssl`、`curl`
+- Node.js（Stop hook が Dev Container CLI を使う）
+
+プロジェクトはホームディレクトリ配下に置く。`/private/tmp` では Dev Container の起動に失敗した実績がある。
 
 ## 使い方
 
@@ -28,7 +53,7 @@ Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev 
 
 ```sh
 ./gradlew test      # テスト
-./gradlew build     # ビルド
+./gradlew build     # 全検査を含むビルド（JAR だけなら bootJar）
 ./gradlew bootRun   # 起動（http://localhost:8080）
 ```
 
@@ -72,13 +97,13 @@ Dev Container を開くと、`.devcontainer/compose.yaml` により開発コン�
 | データベース | 用途 | 接続先の指定 |
 |---|---|---|
 | `app` | 開発時の起動 | `compose.yaml` の `SPRING_DATASOURCE_*` |
-| `app_test` | `./gradlew test` | `build.gradle.kts` の `test` タスク |
+| `app_test` | Gradle からのテストと PIT | `build.gradle.kts` の `Test` タスクと `pitest` |
 
 - スキーマは Flyway で管理し、起動時に `src/main/resources/db/migration` を適用する。
 - IDE からテストを直接実行すると、接続先の上書きが効かず `app` に繋がる。`app_test` を使うには `./gradlew test` で実行する。
 - データは volume に永続化され、コンテナを作り直しても残る。
 
-データを初期化するときは、コンテナを止めて DB の volume を削除し、Dev Container を起動し直す。`down -v` は共有の Gradle キャッシュも削除対象になるため使わない。
+データを初期化するときは、ホストでコンテナを止めて DB の volume を削除し、Dev Container を起動し直す。`down -v` は共有の Gradle キャッシュも削除対象になるため使わない。
 
 ```sh
 docker compose --project-name <プロジェクトフォルダ名>_devcontainer -f .devcontainer/compose.yaml down
@@ -104,7 +129,7 @@ docker volume rm <プロジェクトフォルダ名>_devcontainer_db-data
 ./gradlew spotlessApply   # 書式を自動修正
 ```
 
-カバレッジとミューテーションスコアはプロジェクト全体で判定し、`*Application` クラスは対象外とする。`typos` はコンテナ内にのみ導入されるため、`check` はコンテナ内で実行する。
+カバレッジとミューテーションスコアはプロジェクト全体で判定し、`*Application` クラスは対象外とする。`check` は `typos`、`tbls`、`db` への接続を使うため、コンテナ内で実行する。
 
 ### レポートの確認
 
@@ -132,7 +157,7 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 
 ## ドキュメントの自動生成
 
-`doc/autogen/` は、コードと DB から生成して Git で管理する。**直接編集してはならない。** 直接編集すると `./gradlew check` が失敗する。Mermaid 形式の Markdown なので GitHub で描画される。
+`doc/autogen/` は、コードと DB から生成して Git で管理する。**直接編集してはならない。** 直接編集すると `./gradlew check` が失敗する。図は Mermaid 形式の Markdown で書かれ、GitHub で描画される想定である。
 
 | 生成物 | 内容 | 生成元 |
 |---|---|---|
@@ -146,7 +171,7 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 ./gradlew generateDocs
 ```
 
-Claude Code の作業では、応答の終了時に Stop hook が未検証の変更に対して `generateDocs` と `check` を自動で実行する。手で編集したときは自動では更新されないため、上のコマンドを実行する。
+Claude Code の作業では、未コミットの変更が残っていると、応答の終了時に Stop hook が `generateDocs` と `check` を自動で実行する。実行されない条件は [ガードの説明](doc/guards.md#claude-code-の設定) を参照する。手で編集したときやコミットまで済ませたときは自動では更新されないため、コミットの前に上のコマンドを実行する。
 
 ## Docker イメージ
 
@@ -161,6 +186,8 @@ docker run --rm -p 8080:8080 \
   spring-boot-template
 ```
 
+`<ホスト>` には、起動するコンテナから届く PostgreSQL を指定する。`localhost` はコンテナ自身を指す。Dev Container の `db` はポートを公開していないので接続できない。起動の確認だけなら、下のスモークテストを使う。
+
 死活監視には `GET /actuator/health` を使う。DB に接続できないと `UP` にならない。Actuator で公開するのは `health` のみとする。
 
 ホストで `scripts/smoke-test.sh` を実行すると、イメージをビルドして PostgreSQL と起動し、応答を確認して後片付けまでを行う。CI でも実行する。
@@ -169,21 +196,18 @@ docker run --rm -p 8080:8080 \
 
 ## 依存関係の更新
 
-Dependabot が Gradle、GitHub Actions、Docker イメージの更新を毎週確認し、Pull Request を作る。`build.gradle.kts` などを変更するため、マージには人のレビューが必要となる。`.devcontainer/Dockerfile` の typos と tbls、`build.gradle.kts` の PMD、PIT、JaCoCo などのツールの版は対象外で、手で更新する。
+Dependabot が Gradle、GitHub Actions、2 つの `Dockerfile` のベースイメージの更新を毎週確認し、Pull Request を作る設定である（実物の Pull Request はまだ確認していない）。`build.gradle.kts` などを変更するため、マージには人のレビューが必要となる。
+
+次は対象外と見込まれるので、手で更新する。
+
+- `.devcontainer/Dockerfile` の typos と tbls
+- `build.gradle.kts` の PMD、PIT、JaCoCo などのツールの版
+- `compose.yaml` と `scripts/smoke-test.sh` の `postgres:18`
+- `.github/workflows/check.yml` の `@devcontainers/cli` の版
 
 ## テンプレートから新規プロジェクトを作るとき
 
-以下を新しいプロジェクト名に置き換える。
-
-- `settings.gradle.kts` の `rootProject.name`
-- `build.gradle.kts` の `group`
-- `src/main/resources/application.properties` の `spring.application.name`
-- `src/main/java` と `src/test/java` のパッケージ名および `SpringBootTemplateApplication` のクラス名
-- `build.gradle.kts` の `mainClass` と `pitest` のパッケージ名、`ArchitectureTests` のパッケージ名
-- `.devcontainer/devcontainer.json` の `name`
-- `.github/CODEOWNERS` の所有者
-- `.github/agent-app.env` の GitHub App の ID
-- `.devcontainer/devcontainer.json` と `.devcontainer/compose.yaml` の開発用イメージ名 `spring-boot-template-dev`
+[GitHub の設定手順](doc/github-setup.md) に従う。名前の置き換えの一覧も、手順の 3 節にある。
 
 ## Gradle キャッシュの共有
 

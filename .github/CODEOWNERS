@@ -1,7 +1,12 @@
 # Fail closed: every path needs a human review unless it is listed below.
+# The last matching line wins, so keep this order.
 * @kajip
 
 # No owner: these paths can merge without a human once CI passes.
 /doc/
 /README.md
 /src/test/
+
+# Inside the paths above, but they define the gates and the agent's own instructions.
+/src/test/java/org/kajip/app/ArchitectureTests.java @kajip
+/doc/agent-workflow.md @kajip

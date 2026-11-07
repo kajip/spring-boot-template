@@ -1,6 +1,6 @@
 # Agent による開発フロー
 
-Agent はすべての変更を Pull Request にし、自動マージを指定する。無人でマージするか人がレビューするかは、Agent の申告ではなく変更されたパスで決まる。
+ここでの Agent は Claude Code を指す。Agent はすべての変更を Pull Request にし、自動マージを指定する。無人でマージするか人がレビューするかは、Agent の申告ではなく変更されたパスで決まる。
 
 ## マージの振り分け
 
@@ -10,17 +10,28 @@ Agent はすべての変更を Pull Request にし、自動マージを指定す
 |---|---|
 | `doc/`、`README.md`、`src/test/` のみ | CI の成功で自動マージ |
 | それ以外を 1 つでも含む | CI の成功に加えて人の承認が必要 |
+| `src/test/.../ArchitectureTests.java`、`doc/agent-workflow.md` | 無人の範囲内だが、例外として人の承認が必要 |
+| `.github/workflows/` | App では push できない。人が push する |
 
 `src/main/` は当初は人のレビュー対象とする。PIT と ArchUnit の運用実績を確かめてから、無人の範囲を広げる。
 
-パスでは変更の意味を判定できない。`src/test/` の変更で検証を弱めると PIT のスコアが下がるが、スコアはプロジェクト全体の割合で判定するため、閾値の範囲内の劣化は通る。無人マージには見逃しの余地が残るので、問題が出たら revert の Pull Request で戻す。
+パスでは変更の意味を判定できない。無人の範囲に残る弱点は [ガードの説明](guards.md#残る弱点) を参照する。問題が出たら revert の Pull Request で戻す。
 
 ## Agent の手順
 
-```sh
-git switch -c <type>/<topic> main
+**Mac（ホスト）のプロジェクト直下で、次の一連のコマンドを同じシェルで実行する。** Dev Container には `gh` も秘密鍵も無い。Claude Code の Bash ツールは呼び出しをまたいで環境変数を保持しないため、`GH_TOKEN` を使うコマンドは同じ呼び出しで実行する。
 
-# 実装してコミットする
+```sh
+# 最新の main から作業ブランチを切る。<type> は Conventional Commits の種別
+git fetch origin
+git switch -c <type>/<topic> origin/main
+
+# 実装の後、生成物を更新して全検査を通す（Dev Container 内で実行される）
+npx -y @devcontainers/cli up --workspace-folder .
+npx -y @devcontainers/cli exec --workspace-folder . ./gradlew generateDocs check
+
+# doc/autogen/ の更新も含めてコミットする
+git add -A
 git -c user.name='claude-code-coding-agent[bot]' \
   -c user.email='353756006+claude-code-coding-agent[bot]@users.noreply.github.com' \
   commit
@@ -32,25 +43,14 @@ gh pr create --fill
 gh pr merge --auto --squash
 ```
 
-トークンと秘密鍵は表示しない。秘密鍵はリポジトリの外（`~/.config/claude-code-coding-agent/key.pem`）に置く。
+- **名義の確認：** 作者は `gh pr view --json author` で確かめる。`app/` で始まらなければ、人の名義で作成されている。
+- **`credential.helper` の指定は省かない。** `git push` は `GH_TOKEN` を直接は読まず、指定しないと Mac に保存された人の認証情報で push し得る。
+- **秘密情報：** トークンと秘密鍵は表示しない。秘密鍵はリポジトリの外（`~/.config/claude-code-coding-agent/key.pem`）に置く。
 
 同じ環境に人の認証情報があると、Agent は人の名義でも操作できる。無人で動かすときは、人の認証情報が無い環境で実行する。
 
-## 初回に人が行う設定
+## 関連文書
 
-1. GitHub にリポジトリを作成し、`main` を push する。`main` への直接の push は `.claude/settings.json` で Claude に禁じているため、人が実行する。
-2. Agent 専用の GitHub App を作り、対象のリポジトリにのみインストールする。作者は自分の Pull Request を承認できないため、人のアカウントと分ける。権限は Contents と Pull requests の Read and write、Checks と Commit statuses の Read-only のみとし、Administration と Workflows は与えない。
-3. リポジトリの設定で `Allow auto-merge` を有効にする。
-4. `main` に次の保護を設定する。
-   - Pull Request を必須にする（承認数は 0、Code Owner のレビューを必須）
-   - ステータスチェック `check` の成功を必須にする
-   - 強制 push と削除を禁止する
-   - 迂回は管理者の Pull Request 経由のみ許可する（直接の push は管理者でも禁止）
-
-唯一の Code Owner は自分の Pull Request を承認できないため、人の変更をマージできるよう管理者の迂回を残す。Agent に管理者権限があると同じ迂回ができてしまう。Agent 専用のアカウントに切り替えるまで、人のレビューの関門は Agent に効かない。
-
-非公開リポジトリでは、契約プランによりブランチ保護を使えない場合がある。
-
-## テンプレートから作るとき
-
-`.github/CODEOWNERS` の所有者を、そのプロジェクトのレビュー担当者に置き換える。
+- GitHub 側の設定は [GitHub の設定手順](github-setup.md) を参照する。
+- ガードの全体像は [ガードの説明](guards.md) を参照する。
+- 人の認証情報が無い環境は [Agent 実行コンテナの設計](agent-container-design.md) にある。未実装である。
