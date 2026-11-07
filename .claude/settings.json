@@ -1,7 +1,15 @@
 {
   "permissions": {
     "deny": [
-      "Edit(/doc/autogen/**)"
+      "Edit(/doc/autogen/**)",
+      "Read(/.env)",
+      "Read(/.env.*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push origin main*)",
+      "Bash(git push origin HEAD:main*)"
     ]
   },
   "hooks": {

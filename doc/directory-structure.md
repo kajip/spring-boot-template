@@ -12,8 +12,12 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 │   ├── compose.yaml             開発コンテナ（app）と PostgreSQL（db）の定義
 │   ├── devcontainer.json        Dev Container の設定
 │   └── init-test-db.sql         テスト用データベース app_test の作成
+├── .github/                     GitHub の設定
+│   ├── CODEOWNERS               人のレビューが必要なパス
+│   └── workflows/check.yml      CI（Dev Container で check を実行）
 ├── config/pmd/ruleset.xml       PMD のルール
 ├── doc/                         ドキュメント
+│   ├── agent-workflow.md        Agent による開発フロー
 │   ├── autogen/                 生成物（直接編集しない）
 │   │   ├── class-diagram.md     クラス図
 │   │   └── schema/              ER 図とテーブル定義

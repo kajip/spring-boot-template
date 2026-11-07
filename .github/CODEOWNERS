@@ -1,0 +1,7 @@
+# Fail closed: every path needs a human review unless it is listed below.
+* @kajip
+
+# No owner: these paths can merge without a human once CI passes.
+/doc/
+/README.md
+/src/test/

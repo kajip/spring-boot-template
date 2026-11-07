@@ -10,6 +10,7 @@ Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev 
 
 - [ディレクトリ構造](doc/directory-structure.md)
 - [環境変数とパラメータ](doc/parameters.md)
+- [Agent による開発フロー](doc/agent-workflow.md)
 - [クラス図](doc/autogen/class-diagram.md)
 - [ER 図とテーブル定義](doc/autogen/schema/README.md)
 
@@ -145,6 +146,7 @@ docker run --rm -p 8080:8080 \
 - `src/main/resources/application.properties` の `spring.application.name`
 - `src/main/java` と `src/test/java` のパッケージ名および `SpringBootTemplateApplication` のクラス名
 - `.devcontainer/devcontainer.json` の `name`
+- `.github/CODEOWNERS` の所有者
 - `.devcontainer/devcontainer.json` と `.devcontainer/compose.yaml` の開発用イメージ名 `spring-boot-template-dev`
 
 ## Gradle キャッシュの共有
