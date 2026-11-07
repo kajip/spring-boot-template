@@ -1,0 +1,9 @@
+.claude/
+.devcontainer/
+.git/
+.gradle/
+build/
+config/
+*.md
+.dockerignore
+Dockerfile

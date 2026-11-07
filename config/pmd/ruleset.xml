@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="project-rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>Project PMD rules</description>
+
+  <rule ref="category/java/bestpractices.xml">
+    <exclude name="UnitTestShouldIncludeAssert"/>
+  </rule>
+  <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert">
+    <properties>
+      <property name="extraAssertMethodNames" value="andExpect"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/errorprone.xml"/>
+  <rule ref="category/java/performance.xml"/>
+
+  <rule ref="category/java/codestyle.xml/ClassNamingConventions"/>
+  <rule ref="category/java/codestyle.xml/FieldNamingConventions"/>
+  <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
+  <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
+  <rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
+  <rule ref="category/java/codestyle.xml/UnnecessaryImport"/>
+
+  <rule ref="category/java/design.xml/CognitiveComplexity"/>
+  <rule ref="category/java/design.xml/CyclomaticComplexity"/>
+</ruleset>
