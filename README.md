@@ -11,6 +11,9 @@ Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev 
 - [ディレクトリ構造](doc/directory-structure.md)
 - [環境変数とパラメータ](doc/parameters.md)
 - [Agent による開発フロー](doc/agent-workflow.md)
+- [ガードの説明](doc/guards.md)
+- [GitHub の設定手順](doc/github-setup.md)（このテンプレートから複製したときに実施する）
+- [Agent 実行コンテナの設計](doc/agent-container-design.md)（未実装）
 - [クラス図](doc/autogen/class-diagram.md)
 - [ER 図とテーブル定義](doc/autogen/schema/README.md)
 - [API 仕様](doc/autogen/openapi.json)
@@ -173,7 +176,7 @@ Dependabot が Gradle、GitHub Actions、Docker イメージの更新を毎週�
 
 ## テンプレートから新規プロジェクトを作るとき
 
-以下を新しいプロジェクト名に置き換える。
+GitHub 側の設定は [GitHub の設定手順](doc/github-setup.md) に従う。以下を新しいプロジェクト名に置き換える。
 
 - `settings.gradle.kts` の `rootProject.name`
 - `build.gradle.kts` の `group`

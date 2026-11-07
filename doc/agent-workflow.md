@@ -36,21 +36,8 @@ gh pr merge --auto --squash
 
 同じ環境に人の認証情報があると、Agent は人の名義でも操作できる。無人で動かすときは、人の認証情報が無い環境で実行する。
 
-## 初回に人が行う設定
+## 関連文書
 
-1. GitHub にリポジトリを作成し、`main` を push する。`main` への直接の push は `.claude/settings.json` で Claude に禁じているため、人が実行する。
-2. Agent 専用の GitHub App を作り、対象のリポジトリにのみインストールする。作者は自分の Pull Request を承認できないため、人のアカウントと分ける。権限は Contents と Pull requests の Read and write、Checks と Commit statuses の Read-only のみとし、Administration と Workflows は与えない。
-3. リポジトリの設定で `Allow auto-merge` を有効にする。
-4. `main` に次の保護を設定する。
-   - Pull Request を必須にする（承認数は 0、Code Owner のレビューを必須）
-   - ステータスチェック `check` の成功を必須にする
-   - 強制 push と削除を禁止する
-   - 迂回は管理者の Pull Request 経由のみ許可する（直接の push は管理者でも禁止）
-
-唯一の Code Owner は自分の Pull Request を承認できないため、人の変更をマージできるよう管理者の迂回を残す。Agent に管理者権限があると同じ迂回ができてしまう。Agent 専用のアカウントに切り替えるまで、人のレビューの関門は Agent に効かない。
-
-非公開リポジトリでは、契約プランによりブランチ保護を使えない場合がある。
-
-## テンプレートから作るとき
-
-`.github/CODEOWNERS` の所有者を、そのプロジェクトのレビュー担当者に置き換える。
+- GitHub 側の設定は [GitHub の設定手順](github-setup.md) を参照する。
+- ガードの全体像は [ガードの説明](guards.md) を参照する。
+- 人の認証情報が無い環境は [Agent 実行コンテナの設計](agent-container-design.md) にある。未実装である。

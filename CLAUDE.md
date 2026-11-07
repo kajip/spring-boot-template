@@ -11,7 +11,7 @@ Java 25 / Spring Boot 4 / Gradle（Kotlin DSL）/ PostgreSQL のテンプレー�
 - コミットメッセージは [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) に従う。
 - 応答の終了時に Stop hook（`.claude/hooks/run-check.sh`）が未検証の変更へ `generateDocs` と `check` を実行する。失敗を返されたら修正する。
 - `doc/autogen/` は生成物なので直接編集しない。編集ツールは `.claude/settings.json` で拒否され、シェルからの書き換えも禁止する。更新は `generateDocs` で行う。
-- 手書きの `doc/directory-structure.md` と `doc/parameters.md` は自動で更新されない。ディレクトリ構成や環境変数を変えたら合わせて更新する。
+- 手書きの `doc/directory-structure.md`、`doc/parameters.md`、`doc/guards.md`、`doc/github-setup.md` は自動で更新されない。ディレクトリ構成、環境変数、ガード、GitHub の設定を変えたら合わせて更新する。
 - 検査を通すために閾値の引き下げやルールの無効化をしない。誤検知の抑止は対象を最小限にし、理由をコメントで残す。
 
 ## 実行環境
