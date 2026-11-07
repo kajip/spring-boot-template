@@ -1,11 +1,10 @@
 {
   "name": "spring-boot-template",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "mounts": [
-    "source=spring-boot-gradle-cache,target=/home/vscode/.gradle,type=volume"
-  ],
+  "initializeCommand": "docker build --quiet --tag spring-boot-template-dev .devcontainer",
+  "dockerComposeFile": "compose.yaml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
   "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.gradle",
   "forwardPorts": [8080],
   "customizations": {

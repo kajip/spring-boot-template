@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Java 25 / Spring Boot 4 / Gradle（Kotlin DSL）のテンプレート。利用者向けの手順は `README.md` を参照する。
+Java 25 / Spring Boot 4 / Gradle（Kotlin DSL）/ PostgreSQL のテンプレート。利用者向けの手順は `README.md` を参照する。
 
 ## ルール
 
@@ -19,6 +19,9 @@ npx -y @devcontainers/cli exec --workspace-folder . ./gradlew <タスク>
 ```
 
 - `.devcontainer/` を変更したら、`up` に `--remove-existing-container` を付けて作り直す。既存のコンテナでは変更が反映されないことがある。
+- Dev Container は Compose で PostgreSQL（`db`）と同時に起動する。テストは Gradle の `test` タスク経由で `app_test` に繋ぎ、開発用の `app` と分ける。
+- スキーマの変更は `src/main/resources/db/migration` に Flyway のマイグレーションとして追加する。適用済みのファイルは書き換えない。
+- `docker compose down -v` は共有の Gradle キャッシュも削除対象になるため使わない。
 - ホスト上で Dev Container を検証するときは、ワークスペースをホームディレクトリ配下に置く。`/private/tmp` では起動に失敗した実績がある。
 
 ## 主なタスク

@@ -1,0 +1,38 @@
+services:
+  app:
+    # Built by initializeCommand: with a build section here, the Dev Container CLI passes a
+    # Dockerfile outside the build context, which Compose bake refuses to read.
+    image: spring-boot-template-dev
+    command: sleep infinity
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/app
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app
+    volumes:
+      - ..:/workspace:cached
+      - gradle-cache:/home/vscode/.gradle
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    volumes:
+      - db-data:/var/lib/postgresql
+      - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      # TCP on purpose: during initialization the server only listens on the Unix socket,
+      # so this does not report ready until the init scripts have finished.
+      test: ["CMD", "pg_isready", "-h", "localhost", "-U", "app", "-d", "app_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  db-data:
+  gradle-cache:
+    name: spring-boot-gradle-cache

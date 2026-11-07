@@ -3,7 +3,8 @@
 Spring Boot アプリ開発用テンプレート。ビルドとテストは Dev Container 上で実行するため、ローカルに Java は不要。
 
 - Java 25 / Spring Boot 4.1.2 / Gradle Wrapper（Kotlin DSL）
-- `GET /` が `Hello, World!` を返すサンプル付き
+- PostgreSQL 18 / Spring Data JDBC / Flyway
+- `GET /` が `Hello, World!` を、`GET /greetings` が DB の内容を JSON で返すサンプル付き
 
 ## 必要なもの
 
@@ -35,6 +36,26 @@ npx @devcontainers/cli exec --workspace-folder . ./gradlew test
 
 CLI はポート転送を行わないため、起動したアプリへのホストからのアクセスには VS Code を使う。
 
+## データベース
+
+Dev Container を開くと、`.devcontainer/compose.yaml` により開発コンテナ（`app`）と PostgreSQL（`db`）が同時に起動する。
+
+| データベース | 用途 | 接続先の指定 |
+|---|---|---|
+| `app` | 開発時の起動 | `compose.yaml` の `SPRING_DATASOURCE_*` |
+| `app_test` | `./gradlew test` | `build.gradle.kts` の `test` タスク |
+
+- スキーマは Flyway で管理し、起動時に `src/main/resources/db/migration` を適用する。
+- IDE からテストを直接実行すると、接続先の上書きが効かず `app` に繋がる。`app_test` を使うには `./gradlew test` で実行する。
+- データは volume に永続化され、コンテナを作り直しても残る。
+
+データを初期化するときは、コンテナを止めて DB の volume を削除し、Dev Container を起動し直す。`down -v` は共有の Gradle キャッシュも削除対象になるため使わない。
+
+```sh
+docker compose --project-name <プロジェクトフォルダ名>_devcontainer -f .devcontainer/compose.yaml down
+docker volume rm <プロジェクトフォルダ名>_devcontainer_db-data
+```
+
 ## 静的解析
 
 コンテナ内で `./gradlew check` を実行すると、テストと以下の検査をまとめて実行し、違反があれば失敗する。
@@ -64,7 +85,7 @@ open build/reports/jacoco/test/html/index.html  # カバレッジ
 open build/reports/pmd/main.html                # PMD
 ```
 
-コンテナ内から確認する場合は、プロジェクト直下（`/workspaces/<プロジェクト名>`）で JDK 付属の `jwebserver` を起動する。`-d` には絶対パスが必要なため `$PWD` を使っており、プロジェクト名の読み替えは不要。
+コンテナ内から確認する場合は、プロジェクト直下（`/workspace`）で JDK 付属の `jwebserver` を起動する。`-d` には絶対パスが必要なため `$PWD` を使う。
 
 ```sh
 jwebserver -d "$PWD/build/reports" -p 8000
@@ -82,10 +103,14 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 
 ```sh
 docker build -t spring-boot-template .
-docker run --rm -p 8080:8080 spring-boot-template
+docker run --rm -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://<ホスト>:5432/<データベース> \
+  -e SPRING_DATASOURCE_USERNAME=<ユーザー> \
+  -e SPRING_DATASOURCE_PASSWORD=<パスワード> \
+  spring-boot-template
 ```
 
-イメージのビルドではテストと静的解析を実行しないため、事前に `./gradlew check` を通しておく。
+接続情報は必須で、指定しないと起動に失敗する。イメージのビルドではテストと静的解析を実行しないため、事前に `./gradlew check` を通しておく。
 
 ## テンプレートから新規プロジェクトを作るとき
 
@@ -96,7 +121,8 @@ docker run --rm -p 8080:8080 spring-boot-template
 - `src/main/resources/application.properties` の `spring.application.name`
 - `src/main/java` と `src/test/java` のパッケージ名および `SpringBootTemplateApplication` のクラス名
 - `.devcontainer/devcontainer.json` の `name`
+- `.devcontainer/devcontainer.json` と `.devcontainer/compose.yaml` の開発用イメージ名 `spring-boot-template-dev`
 
 ## Gradle キャッシュの共有
 
-`~/.gradle` は volume `spring-boot-gradle-cache` に置かれ、このテンプレートから作った全プロジェクトで共有される。依存の再取得を省ける一方、複数のコンテナで同時にビルドするとキャッシュのロック待ちで失敗する可能性がある。その場合は同時実行を避けるか、`devcontainer.json` の volume 名をプロジェクト固有に変更する。
+`~/.gradle` は volume `spring-boot-gradle-cache` に置かれ、このテンプレートから作った全プロジェクトで共有される。依存の再取得を省ける一方、複数のコンテナで同時にビルドするとキャッシュのロック待ちで失敗する可能性がある。その場合は同時実行を避けるか、`compose.yaml` の volume の `name` をプロジェクト固有に変更する。
