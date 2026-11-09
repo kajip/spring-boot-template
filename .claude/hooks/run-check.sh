@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
-# Stop hook: regenerates doc/autogen/ and runs ./gradlew check in the Dev Container when the working
-# tree has uncommitted changes that have not been checked yet. Exit code 2 sends the failure
-# to Claude.
+# Stop hook: regenerates doc/autogen/ and runs ./gradlew check in the Dev Container when there
+# are changes that have not been checked yet, either uncommitted or committed but not yet on
+# origin/main. Exit code 2 sends the failure to Claude.
 set -uo pipefail
 
 readonly MAX_ATTEMPTS=3
+readonly GENERATED=doc/autogen
 
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 git rev-parse --verify --quiet HEAD >/dev/null || exit 0
-[ -n "$(git status --porcelain)" ] || exit 0
+
+# Committing within a turn must not skip the check, so commits missing from origin/main count
+# as changes. Without origin/main, only uncommitted changes do.
+has_unmerged_commits() {
+  git rev-parse --verify --quiet origin/main >/dev/null &&
+    ! git merge-base --is-ancestor HEAD origin/main
+}
+[ -n "$(git status --porcelain)" ] || has_unmerged_commits || exit 0
 
 state_dir=$(git rev-parse --git-path claude-check)
 mkdir -p "$state_dir"
@@ -55,6 +63,11 @@ current=$(fingerprint)
 if [ "$status" -eq 0 ]; then
   echo "$current" >"$state_dir/passed"
   rm -f "$state_dir/failed"
+  # Pushing without these files would fail the freshness check in CI.
+  if [ -n "$(git status --porcelain -- "$GENERATED")" ]; then
+    echo "check は成功しましたが、generateDocs が $GENERATED/ を更新しました。コミットに含めてください。" >&2
+    exit 2
+  fi
   exit 0
 fi
 

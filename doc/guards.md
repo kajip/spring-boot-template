@@ -29,7 +29,7 @@ Agent（Claude Code）に開発を任せても品質と安全を保つための�
 | 作業ルール | ブランチ戦略、App の名義、生成物の扱いなど | `CLAUDE.md` |
 | 編集の拒否 | `doc/autogen/` の編集、`.env` の読み取り | `.claude/settings.json` |
 | コマンドの拒否 | `git push` で始まる `main` への push と強制 push | `.claude/settings.json` |
-| 自動検査 | 応答の終了時に `generateDocs` と `check` を実行し、失敗を Agent に返す | `.claude/hooks/run-check.sh` |
+| 自動検査 | 応答の終了時に、未コミットの変更か `origin/main` に無いコミットがあれば `generateDocs` と `check` を実行し、失敗を Agent に返す | `.claude/hooks/run-check.sh`（試験は `run-check.test.sh`） |
 
 コマンドの拒否は前方一致なので、次の書き方には一致しない。誤操作の防止と位置づけ、実際に push を止めるのは GitHub の保護とする。
 
@@ -40,14 +40,17 @@ Agent（Claude Code）に開発を任せても品質と安全を保つための�
 
 | 場合 | 動作 |
 |---|---|
-| 未コミットの変更が無い（応答内でコミットまで済ませた） | 何もしない |
+| 未コミットの変更が無く、HEAD が `origin/main` に含まれる | 何もしない |
+| `origin/main` を取得していない | 未コミットの変更がある場合のみ実行する |
 | 前回成功した内容と同じ | 省略する |
 | 前回失敗した内容と同じ | 省略して通知する |
 | 修正の再試行が 3 回に達した | 中断して通知する |
 | Dev Container を起動できない | 省略して通知する |
 | 他のコンテナが Gradle キャッシュを使用中 | 完了できず通知し、次回に再実行する |
 
-`generateDocs` が書き換えた `doc/autogen/` は未コミットのまま残る。そのままでは CI の鮮度確認で失敗する。
+`generateDocs` が `doc/autogen/` を書き換えて未コミットのまま残ると、`check` が成功してもその旨を Agent に返し、コミットを促す。そのまま push すると CI の鮮度確認で失敗するためである。
+
+`origin/main` は最後に取得した時点の内容で判定する。マージ済みのコミットも、取得し直すまでは未マージとして扱い、検査し直すことがある。
 
 ## `./gradlew check`
 
@@ -64,6 +67,7 @@ Dev Container 内で実行する。CI でも同じ内容を実行する。
 | テストの検証漏れ | PIT | ミューテーションスコア 80% 以上 |
 | 設計の崩れ | ArchUnit | 配置、依存方向、循環など全ルール |
 | 生成物の古さと直接編集 | テストと `verifySchemaDoc` | `doc/autogen/` が再生成の結果と一致 |
+| Stop hook の不具合 | `testClaudeHooks`（擬似の Dev Container CLI で試験） | 全シナリオ成功 |
 
 カバレッジとスコアはプロジェクト全体の割合で判定するため、コードが増えると小さな劣化は閾値の範囲内に埋もれる。
 

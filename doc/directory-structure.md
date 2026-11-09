@@ -6,6 +6,7 @@ Git で管理する主なファイルの構成。`build/` と `.gradle/` はビ�
 .
 ├── .claude/                     Claude Code の設定
 │   ├── hooks/run-check.sh       応答終了時に generateDocs と check を実行する Stop hook
+│   ├── hooks/run-check.test.sh  Stop hook の試験（check で実行）
 │   └── settings.json            hook の登録と操作の拒否
 ├── .devcontainer/               開発環境
 │   ├── Dockerfile               開発用イメージ（JDK、typos、tbls）

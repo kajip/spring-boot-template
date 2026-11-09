@@ -9,7 +9,7 @@ Java 25 / Spring Boot 4 / Gradle（Kotlin DSL）/ PostgreSQL のテンプレー�
 - GitHub への push と Pull Request の操作は、人のアカウントではなく GitHub App の名義で、Mac 側から行う（手順は `doc/agent-workflow.md`）。`GH_TOKEN` を使うコマンドは 1 回の Bash 呼び出しにまとめる。トークンと秘密鍵を表示しない。
 - コードは機能別パッケージの `web`、`domain`、`persistence` に置く（README の「パッケージ構成」）。ArchUnit が検査する。
 - コミットメッセージは [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) に従う。
-- コミットの前に `generateDocs` と `check` を実行する。応答の終了時に Stop hook（`.claude/hooks/run-check.sh`）も実行するが、未コミットの変更が残っているときのみ動く。失敗を返されたら修正する。
+- コミットの前に `generateDocs` と `check` を実行する。応答の終了時に Stop hook（`.claude/hooks/run-check.sh`）も、未コミットの変更か `origin/main` に無いコミットがあれば実行する。失敗や生成物の更新を返されたら対応する。
 - `doc/autogen/` は生成物なので直接編集しない。編集ツールは `.claude/settings.json` で拒否され、シェルからの書き換えも禁止する。更新は `generateDocs` で行う。
 - `doc/autogen/` 以外の文書と README は自動で更新されない。ディレクトリ構成、環境変数、ガード、GitHub の設定、手順を変えたら合わせて更新する。
 - 検査を通すために閾値の引き下げやルールの無効化をしない。誤検知の抑止は対象を最小限にし、理由をコメントで残す。

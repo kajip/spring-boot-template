@@ -163,6 +163,12 @@ tasks.register("generateDocs") {
 	dependsOn(generateClassDiagram, generateOpenApi, generateSchemaDoc)
 }
 
+val testClaudeHooks = tasks.register<Exec>("testClaudeHooks") {
+	group = "verification"
+	description = "Tests the Claude Code Stop hook with a stubbed Dev Container CLI."
+	commandLine(".claude/hooks/run-check.test.sh")
+}
+
 tasks.check {
-	dependsOn(tasks.jacocoTestCoverageVerification, tasks.pitest, typos, verifySchemaDoc)
+	dependsOn(tasks.jacocoTestCoverageVerification, tasks.pitest, typos, verifySchemaDoc, testClaudeHooks)
 }
