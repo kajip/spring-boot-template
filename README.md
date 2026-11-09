@@ -171,7 +171,7 @@ VS Code がポートを転送すると、ブラウザで以下の URL を開け�
 ./gradlew generateDocs
 ```
 
-Claude Code の作業では、未コミットの変更が残っていると、応答の終了時に Stop hook が `generateDocs` と `check` を自動で実行する。実行されない条件は [ガードの説明](doc/guards.md#claude-code-の設定) を参照する。手で編集したときやコミットまで済ませたときは自動では更新されないため、コミットの前に上のコマンドを実行する。
+Claude Code の作業では、未コミットの変更か `origin/main` に無いコミットがあると、応答の終了時に Stop hook が `generateDocs` と `check` を自動で実行する。実行されない条件は [ガードの説明](doc/guards.md#claude-code-の設定) を参照する。手で編集したときは自動では更新されないため、コミットの前に上のコマンドを実行する。
 
 ## Docker イメージ
 
