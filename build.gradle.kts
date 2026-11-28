@@ -2,9 +2,9 @@ plugins {
 	java
 	pmd
 	jacoco
-	id("org.springframework.boot") version "4.1.2"
+	id("org.springframework.boot") version "4.2.0"
 	id("io.spring.dependency-management") version "1.1.7"
-	id("com.diffplug.spotless") version "8.11.0"
+	id("com.diffplug.spotless") version "8.12.0"
 	id("info.solidsoft.pitest") version "1.19.0"
 }
 
@@ -38,7 +38,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	// Test scope only: the document is generated in tests and production does not serve it.
-	testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.2.0")
+	testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.2.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
